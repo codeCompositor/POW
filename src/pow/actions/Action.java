@@ -1,8 +1,5 @@
 package pow.actions;
 
-/**
- * Created by Olymp on 13.03.15.
- */
 public abstract class Action {
     protected final Type type;
 

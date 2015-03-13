@@ -23,6 +23,7 @@ public class MainTest {
 
     @Test
     public void test1() {
+        System.out.println("Test #1:");
         cards.add(yeti);
         cards.add(grizzly);
         System.out.println("Attacker: " + yeti);
@@ -34,10 +35,7 @@ public class MainTest {
 
     @Test
     public void test2() {
-        board = new Board();
-        yeti = new Creature("Yeti", 4, 4, 5, null);
-        grizzly = new Creature("Grizzly", 3, 3, 3, null);
-        cards = board.getCards();
+        System.out.println("Test #2:");
         cards.add(grizzly);
         cards.add(yeti);
         System.out.println("Attacker: " + yeti);

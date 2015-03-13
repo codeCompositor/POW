@@ -1,6 +1,10 @@
 package pow.basic;
 
 import pow.actions.*;
+import pow.actions.reactions.AttackReactionInterface;
+import pow.actions.reactions.CounterAttackReactionInterface;
+import pow.actions.reactions.DamageReactionInterface;
+import pow.actions.reactions.DeathReactionInterface;
 import pow.cards.Card;
 
 import java.util.ArrayList;
@@ -31,42 +35,78 @@ public class Board implements Cloneable {
         return currentPlayer;
     }
 
-    public void makeAction(Action action) {
+    /*public void makeAction(Action action) {
         System.out.println(action.toString());
         switch (action.getType()) {
             case ATTACK:
                 AttackAction attackAction = (AttackAction) action;
-                for (Card card: cards) {
+                for (Card card : cards) {
                     if (card instanceof AttackReactionInterface) {
-                        ((AttackReactionInterface)card).attackReaction(attackAction, this);
+                        ((AttackReactionInterface) card).attackReaction(attackAction, this);
                     }
                 }
                 break;
             case COUNTER_ATTACK:
                 CounterAttackAction counterAttackAction = (CounterAttackAction) action;
-                for (Card card: cards) {
+                for (Card card : cards) {
                     if (card instanceof CounterAttackReactionInterface) {
-                        ((CounterAttackReactionInterface)card).counterAttackReaction(counterAttackAction, this);
+                        ((CounterAttackReactionInterface) card).counterAttackReaction(counterAttackAction, this);
                     }
                 }
                 break;
             case DAMAGE:
                 DamageAction damageAction = (DamageAction) action;
-                for (Card card: cards) {
+                for (Card card : cards) {
                     if (card instanceof DamageReactionInterface) {
-                        ((DamageReactionInterface)card).damageReaction(damageAction, this);
+                        ((DamageReactionInterface) card).damageReaction(damageAction, this);
                     }
                 }
                 break;
             case DEATH:
                 DeathAction deathAction = (DeathAction) action;
-                for (Card card: cards) {
+                for (Card card : cards) {
                     if (card instanceof DeathReactionInterface) {
-                        ((DeathReactionInterface)card).deathReaction(deathAction, this);
+                        ((DeathReactionInterface) card).deathReaction(deathAction, this);
                     }
                 }
                 break;
         }
+    }*/
+
+    public void makeAction(Action action) {
+        System.out.println(action.toString());
+        if (action instanceof AttackAction) {
+            for (Card card : cards) {
+                if (card instanceof AttackReactionInterface) {
+                    ((AttackReactionInterface) card).attackReaction((AttackAction) action, this);
+                }
+            }
+            return;
+        }
+        if (action instanceof CounterAttackAction) {
+            for (Card card : cards) {
+                if (card instanceof CounterAttackReactionInterface) {
+                    ((CounterAttackReactionInterface) card).counterAttackReaction((CounterAttackAction) action, this);
+                }
+            }
+            return;
+        }
+        if (action instanceof DamageAction) {
+            for (Card card : cards) {
+                if (card instanceof DamageReactionInterface) {
+                    ((DamageReactionInterface) card).damageReaction((DamageAction) action, this);
+                }
+            }
+            return;
+        }
+        if (action instanceof DeathAction) {
+            for (Card card : cards) {
+                if (card instanceof DeathReactionInterface) {
+                    ((DeathReactionInterface) card).deathReaction((DeathAction) action, this);
+                }
+            }
+        }
+
     }
 
     public List<Card> getCards() {

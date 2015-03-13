@@ -1,6 +1,10 @@
 package pow.cards;
 
 import pow.actions.*;
+import pow.actions.reactions.AttackReactionInterface;
+import pow.actions.reactions.CounterAttackReactionInterface;
+import pow.actions.reactions.DamageReactionInterface;
+import pow.actions.reactions.DeathReactionInterface;
 import pow.basic.Board;
 import pow.basic.Player;
 

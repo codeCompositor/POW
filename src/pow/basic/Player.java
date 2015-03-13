@@ -7,9 +7,6 @@ import pow.cards.Zone;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Olymp on 10.03.15.
- */
 public class Player implements Cloneable {
     private Hero hero;
     private Board board;

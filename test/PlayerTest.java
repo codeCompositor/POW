@@ -4,9 +4,6 @@ import pow.cards.Minion;
 import pow.cards.Zone;
 import junit.framework.TestCase;
 
-/**
- * Created by Olymp on 11.03.15.
- */
 public class PlayerTest extends TestCase {
     Player player;
     Minion yeti;

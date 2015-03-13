@@ -2,9 +2,6 @@ package pow.cards;
 
 import pow.basic.Player;
 
-/**
- * Created by Olymp on 11.03.15.
- */
 public class Weapon extends Card {
     protected int attack;
     protected int durability;

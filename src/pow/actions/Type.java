@@ -1,8 +1,5 @@
 package pow.actions;
 
-/**
- * Created by Olymp on 13.03.15.
- */
 public enum Type {
-    ATTACK, COUNTER_ATTACK, DAMAGE, DEATH, NO_TYPE
+    ATTACK, COUNTER_ATTACK, DAMAGE, DEATH, PLAY_CARD, NO_TYPE
 }

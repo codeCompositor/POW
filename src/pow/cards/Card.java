@@ -2,9 +2,6 @@ package pow.cards;
 
 import pow.basic.Player;
 
-/**
- * Created by Olymp on 10.03.15.
- */
 public class Card implements Cloneable {
     protected Player owner;
     protected Zone zone;

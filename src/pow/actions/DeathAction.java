@@ -5,9 +5,9 @@ import pow.cards.Card;
 public class DeathAction extends Action {
     private Card target;
 
-    public DeathAction(Card Target) {
+    public DeathAction(Card target) {
         super(Type.DEATH);
-        this.target = Target;
+        this.target = target;
     }
 
     public Card getTarget() {

@@ -1,11 +1,9 @@
-package pow.actions;
+package pow.actions.reactions;
 
+import pow.actions.CounterAttackAction;
 import pow.basic.Board;
 import pow.cards.Creature;
 
-/**
- * Created by Olymp on 13.03.15.
- */
 public interface CounterAttackReactionInterface {
     void counterAttackReaction(Creature attacker, Creature defender, Board board);
 

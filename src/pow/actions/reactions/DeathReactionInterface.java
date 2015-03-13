@@ -1,5 +1,6 @@
-package pow.actions;
+package pow.actions.reactions;
 
+import pow.actions.DeathAction;
 import pow.basic.Board;
 import pow.cards.Card;
 
