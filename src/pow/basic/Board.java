@@ -6,9 +6,6 @@ import pow.cards.Card;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Olymp on 10.03.15.
- */
 public class Board implements Cloneable {
     private Player players[];
     private List<Card> cards;
@@ -58,6 +55,14 @@ public class Board implements Cloneable {
                 for (Card card: cards) {
                     if (card instanceof DamageReactionInterface) {
                         ((DamageReactionInterface)card).damageReaction(damageAction, this);
+                    }
+                }
+                break;
+            case DEATH:
+                DeathAction deathAction = (DeathAction) action;
+                for (Card card: cards) {
+                    if (card instanceof DeathReactionInterface) {
+                        ((DeathReactionInterface)card).deathReaction(deathAction, this);
                     }
                 }
                 break;

@@ -4,12 +4,10 @@ import pow.actions.*;
 import pow.basic.Board;
 import pow.basic.Player;
 
-/**
- * Created by Olymp on 11.03.15.
- */
-public class Creature extends Card implements AttackReactionInterface, CounterAttackReactionInterface, DamageReactionInterface {
+public class Creature extends Card implements AttackReactionInterface, CounterAttackReactionInterface, DamageReactionInterface, DeathReactionInterface {
     protected int attack;
     protected int health;
+    protected boolean dead;
 
     public Creature() {
         super("ERROR: NO NAME", -1, Type.CREATURE, null);
@@ -19,6 +17,7 @@ public class Creature extends Card implements AttackReactionInterface, CounterAt
         super(name, cost, Type.CREATURE, owner);
         setAttack(attack);
         setHealth(health);
+        setDead(false);
     }
 
     /*public void takeCounterDamage(Creature attacker, int damage) {
@@ -42,17 +41,19 @@ public class Creature extends Card implements AttackReactionInterface, CounterAt
 
     public void takeDamage(int damage) {
         health -= damage;
-        checkDeath();
     }
 
-    public void checkDeath() {
-        if (health <= 0 && zone == Zone.PLAY) {
-            owner.moveCard(zone, zoneID, Zone.GRAVEYARD);
-            zone = Zone.GRAVEYARD;
-            //zoneID = owner.graveyardSize() - 1;
-        }
+    public boolean checkDeath() {
+        return health <= 0 && zone != Zone.GRAVEYARD;
     }
-    
+
+    public void die(Board board) {
+
+        // owner.moveCard(zone, zoneID, Zone.GRAVEYARD);
+        zone = Zone.GRAVEYARD;
+        setDead(true);
+    }
+
     public int getHealth() {
         return health;
     }
@@ -67,6 +68,14 @@ public class Creature extends Card implements AttackReactionInterface, CounterAt
 
     public void setAttack(int attack) {
         this.attack = attack;
+    }
+
+    public boolean isDead() {
+        return dead;
+    }
+
+    public void setDead(boolean dead) {
+        this.dead = dead;
     }
 
     @Override
@@ -95,7 +104,11 @@ public class Creature extends Card implements AttackReactionInterface, CounterAt
 
     @Override
     public void damageReaction(Card attacker, Creature defender, int damage, Board board) {
-        takeDamage(damage);
+        if (defender.equals(this)) {
+            takeDamage(damage);
+            if (checkDeath())
+                board.makeAction(new DeathAction(this));
+        }
     }
 
     @Override
@@ -104,11 +117,24 @@ public class Creature extends Card implements AttackReactionInterface, CounterAt
     }
 
     @Override
+    public void deathReaction(Card target, Board board) {
+        if (target.equals(this)) {
+            die(board);
+        }
+    }
+
+    @Override
+    public void deathReaction(DeathAction action, Board board) {
+        deathReaction(action.getTarget(), board);
+    }
+
+    @Override
     public String toString() {
         return "Creature{" +
-                "name=" + name +
-                ", attack=" + attack +
+                "name=\"" + name +
+                "\", attack=" + attack +
                 ", health=" + health +
+                ", dead=" + dead +
                 '}';
     }
 }

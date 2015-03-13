@@ -3,13 +3,10 @@ package pow.actions;
 import pow.cards.Card;
 import pow.cards.Creature;
 
-/**
- * Created by Olymp on 13.03.15.
- */
 public class DamageAction extends Action {
-    private final Card attacker;
-    private final Creature defender;
-    private final int damage;
+    private Card attacker;
+    private Creature defender;
+    private int damage;
 
     public DamageAction() {
         super(Type.DAMAGE);
@@ -29,12 +26,24 @@ public class DamageAction extends Action {
         return attacker;
     }
 
+    public void setAttacker(Card attacker) {
+        this.attacker = attacker;
+    }
+
     public Creature getDefender() {
         return defender;
     }
 
+    public void setDefender(Creature defender) {
+        this.defender = defender;
+    }
+
     public int getDamage() {
         return damage;
+    }
+
+    public void setDamage(int damage) {
+        this.damage = damage;
     }
 
     @Override

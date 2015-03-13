@@ -2,14 +2,26 @@ package pow.actions;
 
 import pow.cards.Card;
 
-/**
- * Created by Helga on 13.03.15.
- */
 public class DeathAction extends Action {
-    private final Card card;
+    private Card target;
 
-    public DeathAction(Card card) {
+    public DeathAction(Card Target) {
         super(Type.DEATH);
-        this.card = card;
+        this.target = Target;
+    }
+
+    public Card getTarget() {
+        return target;
+    }
+
+    public void setTarget(Card target) {
+        this.target = target;
+    }
+
+    @Override
+    public String toString() {
+        return "DeathAction{" +
+                "target=" + target +
+                '}';
     }
 }

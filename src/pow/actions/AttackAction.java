@@ -2,12 +2,9 @@ package pow.actions;
 
 import pow.cards.Creature;
 
-/**
- * Created by Olymp on 13.03.15.
- */
 public class AttackAction extends Action {
-    private final Creature attacker;
-    private final Creature defender;
+    private Creature attacker;
+    private Creature defender;
 
     public AttackAction() {
         super(Type.ATTACK);
@@ -25,8 +22,16 @@ public class AttackAction extends Action {
         return attacker;
     }
 
+    public void setAttacker(Creature attacker) {
+        this.attacker = attacker;
+    }
+
     public Creature getDefender() {
         return defender;
+    }
+
+    public void setDefender(Creature defender) {
+        this.defender = defender;
     }
 
     @Override
