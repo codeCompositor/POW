@@ -12,6 +12,7 @@ public class Creature extends Card implements AttackReactionInterface, CounterAt
     protected int attack;
     protected int health;
     protected boolean dead;
+    private boolean attacked;
 
     public Creature() {
         super("ERROR: NO NAME", -1, Type.CREATURE, null);
@@ -51,7 +52,7 @@ public class Creature extends Card implements AttackReactionInterface, CounterAt
         return health <= 0 && zone != Zone.GRAVEYARD;
     }
 
-    public void die(Board board) {
+    public void died(Board board) {
 
         // owner.moveCard(zone, zoneID, Zone.GRAVEYARD);
         zone = Zone.GRAVEYARD;
@@ -82,10 +83,20 @@ public class Creature extends Card implements AttackReactionInterface, CounterAt
         this.dead = dead;
     }
 
+    public boolean isAttacked() {
+        return attacked;
+    }
+
+    public void setAttacked(boolean attacked) {
+        this.attacked = attacked;
+    }
+
     @Override
     public void attackReaction(Creature attacker, Creature defender, Board board) {
-        if (attacker.equals(this))
+        if (attacker.equals(this)) {
             board.makeAction(new DamageAction(attacker, defender, attack));
+            attacked = true;
+        }
         if (defender.equals(this))
             board.makeAction(new CounterAttackAction(defender, attacker));
     }
@@ -123,7 +134,7 @@ public class Creature extends Card implements AttackReactionInterface, CounterAt
     @Override
     public void deathReaction(Card target, Board board) {
         if (target.equals(this)) {
-            die(board);
+            died(board);
         }
     }
 
