@@ -1,28 +1,23 @@
 package pow.cards;
 
-import pow.actions.*;
-import pow.actions.reactions.AttackReactionInterface;
-import pow.actions.reactions.CounterAttackReactionInterface;
-import pow.actions.reactions.DamageReactionInterface;
-import pow.actions.reactions.DeathReactionInterface;
+import pow.actions.DamageAction;
+import pow.actions.DeathAction;
 import pow.basic.Board;
-import pow.basic.Player;
 
-public class Creature extends Card implements AttackReactionInterface, CounterAttackReactionInterface, DamageReactionInterface, DeathReactionInterface {
+public class Creature extends Card {
     protected int attack;
     protected int health;
-    protected boolean dead;
-    private boolean attacked;
+    protected int attacksNum;
+    protected int maxAttacksNum;
 
     public Creature() {
-        super("ERROR: NO NAME", -1, Type.CREATURE, null);
+        super("ERROR: NO NAME", -1, Type.CREATURE, 0);
     }
 
-    public Creature(String name, int cost, int attack, int health, Player owner) {
-        super(name, cost, Type.CREATURE, owner);
+    public Creature(String name, int cost, int attack, int health, int player) {
+        super(name, cost, Type.CREATURE, player);
         setAttack(attack);
         setHealth(health);
-        setDead(false);
     }
 
     /*public void takeCounterDamage(Creature attacker, int damage) {
@@ -44,19 +39,27 @@ public class Creature extends Card implements AttackReactionInterface, CounterAt
         target.takeCounterDamage(this, attack);
     }*/
 
-    public void takeDamage(int damage) {
+    public void takeDamage(Card attacker, int damage, Board board) {
         health -= damage;
+        if (checkDeath())
+            board.makeAction(new DeathAction(this));
     }
 
     public boolean checkDeath() {
-        return health <= 0 && zone != Zone.GRAVEYARD;
+        return health <= 0 || zone == Zone.GRAVEYARD;
     }
 
-    public void died(Board board) {
-
-        // owner.moveCard(zone, zoneID, Zone.GRAVEYARD);
+    @Override
+    public void die(Board board) {
         zone = Zone.GRAVEYARD;
-        setDead(true);
+    }
+
+    public void attack(Creature target, Board board) {
+        board.makeAction(new DamageAction(this, target, attack));
+    }
+
+    public void defend(Creature attacker, Board board) {
+        board.makeAction(new DamageAction(this, attacker, attack));
     }
 
     public int getHealth() {
@@ -75,81 +78,12 @@ public class Creature extends Card implements AttackReactionInterface, CounterAt
         this.attack = attack;
     }
 
-    public boolean isDead() {
-        return dead;
-    }
-
-    public void setDead(boolean dead) {
-        this.dead = dead;
-    }
-
-    public boolean isAttacked() {
-        return attacked;
-    }
-
-    public void setAttacked(boolean attacked) {
-        this.attacked = attacked;
-    }
-
-    @Override
-    public void attackReaction(Creature attacker, Creature defender, Board board) {
-        if (attacker.equals(this)) {
-            board.makeAction(new DamageAction(attacker, defender, attack));
-            attacked = true;
-        }
-        if (defender.equals(this))
-            board.makeAction(new CounterAttackAction(defender, attacker));
-    }
-
-    @Override
-    public void attackReaction(AttackAction action, Board board) {
-        attackReaction(action.getAttacker(), action.getDefender(), board);
-    }
-
-    @Override
-    public void counterAttackReaction(Creature attacker, Creature defender, Board board) {
-        if (defender.equals(this))
-            board.makeAction(new DamageAction(attacker, defender, attacker.getAttack()));
-    }
-
-    @Override
-    public void counterAttackReaction(CounterAttackAction action, Board board) {
-        counterAttackReaction(action.getAttacker(), action.getDefender(), board);
-    }
-
-    @Override
-    public void damageReaction(Card attacker, Creature defender, int damage, Board board) {
-        if (defender.equals(this)) {
-            takeDamage(damage);
-            if (checkDeath())
-                board.makeAction(new DeathAction(this));
-        }
-    }
-
-    @Override
-    public void damageReaction(DamageAction action, Board board) {
-        damageReaction(action.getAttacker(), action.getDefender(), action.getDamage(), board);
-    }
-
-    @Override
-    public void deathReaction(Card target, Board board) {
-        if (target.equals(this)) {
-            died(board);
-        }
-    }
-
-    @Override
-    public void deathReaction(DeathAction action, Board board) {
-        deathReaction(action.getTarget(), board);
-    }
-
     @Override
     public String toString() {
         return "Creature{" +
                 "name=\"" + name +
                 "\", attack=" + attack +
                 ", health=" + health +
-                ", dead=" + dead +
                 '}';
     }
 }

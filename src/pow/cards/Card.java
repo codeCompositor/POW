@@ -1,9 +1,9 @@
 package pow.cards;
 
-import pow.basic.Player;
+import pow.basic.Board;
 
 public class Card implements Cloneable {
-    protected Player owner;
+    protected int player;
     protected Zone zone;
     protected int zoneID;
     private Type type;
@@ -17,11 +17,11 @@ public class Card implements Cloneable {
     protected String inPlayText;
     protected String flavor;
 
-    public Card(String name, int cost, Type type, Player owner) {
+    public Card(String name, int cost, Type type, int player) {
         this.name = name;
         this.cost = cost;
         this.type = type;
-        this.owner = owner;
+        this.player = player;
     }
 
     public Type getType() {
@@ -55,4 +55,6 @@ public class Card implements Cloneable {
     public void setZoneID(int zoneID) {
         this.zoneID = zoneID;
     }
+
+    public void die(Board board) {}
 }

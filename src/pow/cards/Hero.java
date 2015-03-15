@@ -1,12 +1,10 @@
 package pow.cards;
 
-import pow.basic.Player;
-
 public class Hero extends Creature {
     protected Weapon weapon;
 
-    public Hero(String name, int health, Player owner) {
-        super(name, 0, 0, health, owner);
+    public Hero(String name, int health, int player) {
+        super(name, 0, 0, health, player);
         weapon = null;
     }
 

@@ -1,13 +1,11 @@
 package pow.cards;
 
-import pow.basic.Player;
-
 public class Weapon extends Card {
     protected int attack;
     protected int durability;
 
-    public Weapon(String name, int cost, int attack, int durability, Player owner) {
-        super(name, cost, Type.WEAPON, owner);
+    public Weapon(String name, int cost, int attack, int durability, int player) {
+        super(name, cost, Type.WEAPON, player);
         setAttack(attack);
         setDurability(durability);
     }
@@ -28,13 +26,13 @@ public class Weapon extends Card {
         this.durability = durability;
     }
 
-    public void decreaseDurability() {
-        --durability;
-        if (durability <= 0)
-            destroy();
-    }
-
-    public void destroy() {
-        owner.getHero().setWeapon(null);
-    }
+//    public void decreaseDurability() {
+//        --durability;
+//        if (durability <= 0)
+//            destroy();
+//    }
+//
+//    public void destroy() {
+//        owner.getHero().setWeapon(null);
+//    }
 }

@@ -1,29 +1,30 @@
 package pow.basic;
 
-import pow.actions.*;
+import pow.actions.Action;
+import pow.actions.AttackAction;
+import pow.actions.DamageAction;
+import pow.actions.DeathAction;
 import pow.actions.reactions.AttackReactionInterface;
-import pow.actions.reactions.CounterAttackReactionInterface;
 import pow.actions.reactions.DamageReactionInterface;
 import pow.actions.reactions.DeathReactionInterface;
 import pow.cards.Card;
+import pow.cards.Minion;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Board implements Cloneable {
-    private Player players[];
     private List<Card> cards;
+    private List<Card> cards1;
+    private List<Card> play[];
+    private List<Minion> minionsInPlay[];
     private byte currentPlayer;
 
     public Board() {
-        players = new Player[2];
-        players[0] = new Player();
-        players[1] = new Player();
         cards = new ArrayList<Card>();
     }
 
     public Board(Board board) {
-        players = board.players.clone();
         currentPlayer = board.currentPlayer;
     }
 
@@ -35,76 +36,37 @@ public class Board implements Cloneable {
         return currentPlayer;
     }
 
-    /*public void makeAction(Action action) {
-        System.out.println(action.toString());
-        switch (action.getType()) {
-            case ATTACK:
-                AttackAction attackAction = (AttackAction) action;
-                for (Card card : cards) {
-                    if (card instanceof AttackReactionInterface) {
-                        ((AttackReactionInterface) card).attackReaction(attackAction, this);
-                    }
-                }
-                break;
-            case COUNTER_ATTACK:
-                CounterAttackAction counterAttackAction = (CounterAttackAction) action;
-                for (Card card : cards) {
-                    if (card instanceof CounterAttackReactionInterface) {
-                        ((CounterAttackReactionInterface) card).counterAttackReaction(counterAttackAction, this);
-                    }
-                }
-                break;
-            case DAMAGE:
-                DamageAction damageAction = (DamageAction) action;
-                for (Card card : cards) {
-                    if (card instanceof DamageReactionInterface) {
-                        ((DamageReactionInterface) card).damageReaction(damageAction, this);
-                    }
-                }
-                break;
-            case DEATH:
-                DeathAction deathAction = (DeathAction) action;
-                for (Card card : cards) {
-                    if (card instanceof DeathReactionInterface) {
-                        ((DeathReactionInterface) card).deathReaction(deathAction, this);
-                    }
-                }
-                break;
-        }
-    }*/
-
     public void makeAction(Action action) {
         System.out.println(action.toString());
         if (action instanceof AttackAction) {
+            AttackAction attackAction = (AttackAction) action;
             for (Card card : cards) {
-                if (card instanceof AttackReactionInterface) {
-                    ((AttackReactionInterface) card).attackReaction((AttackAction) action, this);
+                if (card instanceof AttackReactionInterface && !((AttackReactionInterface) card).attackReaction(attackAction, this)){
+                    return;
                 }
             }
+            attackAction.getAttacker().attack(attackAction.getDefender(), this);
+            attackAction.getDefender().defend(attackAction.getAttacker(), this);
             return;
         }
-        if (action instanceof CounterAttackAction) {
-            for (Card card : cards) {
-                if (card instanceof CounterAttackReactionInterface) {
-                    ((CounterAttackReactionInterface) card).counterAttackReaction((CounterAttackAction) action, this);
-                }
-            }
-            return;
-        }
-        if (action instanceof DamageAction) {
+        if (action instanceof DamageAction && ((DamageAction) action).getDefender().getHealth() > 0) {
+            DamageAction damageAction = (DamageAction) action;
             for (Card card : cards) {
                 if (card instanceof DamageReactionInterface) {
-                    ((DamageReactionInterface) card).damageReaction((DamageAction) action, this);
+                    ((DamageReactionInterface) card).damageReaction(damageAction, this);
                 }
             }
+            damageAction.getDefender().takeDamage(damageAction.getAttacker(), damageAction.getDamage(), this);
             return;
         }
         if (action instanceof DeathAction) {
+            DeathAction deathAction = (DeathAction) action;
             for (Card card : cards) {
                 if (card instanceof DeathReactionInterface) {
-                    ((DeathReactionInterface) card).deathReaction((DeathAction) action, this);
+                    ((DeathReactionInterface) card).deathReaction(deathAction, this);
                 }
             }
+            deathAction.getTarget().die(this);
         }
 
     }
@@ -117,5 +79,4 @@ public class Board implements Cloneable {
     protected Board clone() {
         return new Board(this);
     }
-
 }
