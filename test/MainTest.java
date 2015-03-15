@@ -4,22 +4,19 @@ import pow.actions.AttackAction;
 import pow.actions.DamageAction;
 import pow.actions.reactions.DamageReactionInterface;
 import pow.basic.Board;
-import pow.cards.Card;
 import pow.cards.Creature;
-
-import java.util.List;
+import pow.cards.Zone;
 
 public class MainTest {
     Board board;
     Creature yeti;
     Creature grizzly;
     Creature damager;
-    List<Card> cards;
 
     private class Damager extends Creature implements DamageReactionInterface {
 
-        public Damager(String name, int cost, int attack, int health, int player) {
-            super(name, cost, attack, health, player);
+        public Damager(String name, int cost, int attack, int health) {
+            super(name, cost, attack, health);
             setAttack(attack);
             setHealth(health);
         }
@@ -35,18 +32,17 @@ public class MainTest {
     @Before
     public void setUp() {
         board = new Board();
-        yeti = new Creature("Yeti", 4, 4, 5, 0);
-        grizzly = new Creature("Grizzly", 3, 3, 3, 1);
-        damager = new Damager("Damager", 1, 1, 1, 2);
-        cards = board.getCards();
-        cards.add(damager);
+        yeti = new Creature("Yeti", 4, 4, 5);
+        grizzly = new Creature("Grizzly", 3, 3, 3);
+        damager = new Damager("Damager", 1, 1, 1);
+        board.addCard((byte) 0, Zone.PLAY, damager);
     }
 
     @Test
     public void test1() {
         System.out.println("Test #1:");
-        cards.add(yeti);
-        cards.add(grizzly);
+        board.addCard((byte) 0, Zone.PLAY, yeti);
+        board.addCard((byte) 0, Zone.PLAY, grizzly);
         System.out.println("Attacker: " + yeti);
         System.out.println("Defender: " + grizzly + "\n");
         board.makeAction(new AttackAction(yeti, grizzly));
@@ -57,8 +53,8 @@ public class MainTest {
     @Test
     public void test2() {
         System.out.println("Test #2:");
-        cards.add(grizzly);
-        cards.add(yeti);
+        board.addCard((byte) 0, Zone.PLAY, grizzly);
+        board.addCard((byte) 0, Zone.PLAY, yeti);
         System.out.println("Attacker: " + yeti);
         System.out.println("Defender: " + grizzly + "\n");
         board.makeAction(new AttackAction(yeti, grizzly));

@@ -11,11 +11,11 @@ public class Creature extends Card {
     protected int maxAttacksNum;
 
     public Creature() {
-        super("ERROR: NO NAME", -1, Type.CREATURE, 0);
+        super("ERROR: NO NAME", -1, Type.CREATURE);
     }
 
-    public Creature(String name, int cost, int attack, int health, int player) {
-        super(name, cost, Type.CREATURE, player);
+    public Creature(String name, int cost, int attack, int health) {
+        super(name, cost, Type.CREATURE);
         setAttack(attack);
         setHealth(health);
     }
@@ -49,10 +49,10 @@ public class Creature extends Card {
         return health <= 0 || zone == Zone.GRAVEYARD;
     }
 
-    @Override
-    public void die(Board board) {
-        zone = Zone.GRAVEYARD;
-    }
+//    @Override
+//    public void die(Board board) {
+//        zone = Zone.GRAVEYARD;
+//    }
 
     public void attack(Creature target, Board board) {
         board.makeAction(new DamageAction(this, target, attack));

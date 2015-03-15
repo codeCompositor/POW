@@ -4,8 +4,8 @@ public class Weapon extends Card {
     protected int attack;
     protected int durability;
 
-    public Weapon(String name, int cost, int attack, int durability, int player) {
-        super(name, cost, Type.WEAPON, player);
+    public Weapon(String name, int cost, int attack, int durability) {
+        super(name, cost, Type.WEAPON);
         setAttack(attack);
         setDurability(durability);
     }

@@ -3,8 +3,8 @@ package pow.cards;
 public class Hero extends Creature {
     protected Weapon weapon;
 
-    public Hero(String name, int health, int player) {
-        super(name, 0, 0, health, player);
+    public Hero(String name, int health) {
+        super(name, 0, 0, health);
         weapon = null;
     }
 
