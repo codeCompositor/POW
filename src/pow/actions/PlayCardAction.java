@@ -6,7 +6,6 @@ public class PlayCardAction extends Action {
     private Card card;
 
     public PlayCardAction(Card card) {
-        super(Type.PLAY_CARD);
         this.card = card;
     }
 

@@ -6,7 +6,6 @@ public class DeathAction extends Action {
     private Card target;
 
     public DeathAction(Card target) {
-        super(Type.DEATH);
         this.target = target;
     }
 

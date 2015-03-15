@@ -7,13 +7,11 @@ public class AttackAction extends Action {
     private Creature defender;
 
     public AttackAction() {
-        super(Type.ATTACK);
         attacker = null;
         defender = null;
     }
 
     public AttackAction(Creature attacker, Creature defender) {
-        super(Type.ATTACK);
         this.attacker = attacker;
         this.defender = defender;
     }

@@ -9,14 +9,12 @@ public class DamageAction extends Action {
     private int damage;
 
     public DamageAction() {
-        super(Type.DAMAGE);
         attacker = null;
         defender = null;
         damage = 0;
     }
 
     public DamageAction(Card attacker, Creature defender, int damage) {
-        super(Type.DAMAGE);
         this.attacker = attacker;
         this.defender = defender;
         this.damage = damage;
