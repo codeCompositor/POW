@@ -9,13 +9,6 @@ public class Card implements Cloneable {
     private Type type;
     protected String name;
     protected int cost;
-    protected int rarity;
-    protected int faction;
-    protected int race;
-    protected int playerClass;
-    protected String text;
-    protected String inPlayText;
-    protected String flavor;
 
     public Card(String name, int cost, Type type) {
         this.name = name;

@@ -2,6 +2,7 @@ import org.junit.Before;
 import org.junit.Test;
 import pow.actions.AttackAction;
 import pow.actions.DamageAction;
+import pow.actions.PlayCardAction;
 import pow.actions.reactions.DamageReactionInterface;
 import pow.basic.Board;
 import pow.cards.Creature;
@@ -36,30 +37,31 @@ public class MainTest {
         yeti = new Minion("Yeti", 4, 4, 5);
         grizzly = new Minion("Grizzly", 3, 3, 3);
         damager = new Damager("Damager", 1, 1, 1);
-        board.addCard((byte) 0, Zone.PLAY, damager);
     }
 
     @Test
     public void test1() {
-        System.out.println("Test #1:");
-        board.addCard((byte) 0, Zone.PLAY, yeti);
-        board.addCard((byte) 0, Zone.PLAY, grizzly);
-        System.out.println("Attacker: " + yeti);
-        System.out.println("Defender: " + grizzly + "\n");
+        System.out.printf("Test #1:\nAttacker: %s\nDefender: %s\n\n", yeti, grizzly);
+        board.addCard((byte) 0, Zone.HAND, damager);
+        board.addCard((byte) 0, Zone.HAND, yeti);
+        board.addCard((byte) 0, Zone.HAND, grizzly);
+        board.makeAction(new PlayCardAction(yeti));
+        board.makeAction(new PlayCardAction(grizzly));
+        board.makeAction(new PlayCardAction(damager));
         board.makeAction(new AttackAction(yeti, grizzly));
-        System.out.println("\nAttacker: " + yeti);
-        System.out.println("Defender: " + grizzly + "\n\n");
+        System.out.printf("\nAttacker: %s\nDefender: %s\n\n\n", yeti, grizzly);
     }
 
     @Test
     public void test2() {
-        System.out.println("Test #2:");
-        board.addCard((byte) 0, Zone.PLAY, grizzly);
-        board.addCard((byte) 0, Zone.PLAY, yeti);
-        System.out.println("Attacker: " + yeti);
-        System.out.println("Defender: " + grizzly + "\n");
-        board.makeAction(new AttackAction(yeti, grizzly));
-        System.out.println("\nAttacker: " + yeti);
-        System.out.println("Defender: " + grizzly);
+        System.out.printf("Test #2:\nAttacker: %s\nDefender: %s\n\n", grizzly, yeti);
+        board.addCard((byte) 0, Zone.HAND, damager);
+        board.addCard((byte) 0, Zone.HAND, yeti);
+        board.addCard((byte) 0, Zone.HAND, grizzly);
+        board.makeAction(new PlayCardAction(yeti));
+        board.makeAction(new PlayCardAction(grizzly));
+        board.makeAction(new PlayCardAction(damager));
+        board.makeAction(new AttackAction(grizzly, yeti));
+        System.out.printf("\nAttacker: %s\nDefender: %s\n", grizzly, yeti);
     }
 }

@@ -1,11 +1,9 @@
 package pow.basic;
 
 import pow.actions.*;
-import pow.actions.reactions.AttackReactionInterface;
-import pow.actions.reactions.DamageReactionInterface;
-import pow.actions.reactions.DeathReactionInterface;
-import pow.actions.reactions.PlayCardReactionInterface;
+import pow.actions.reactions.*;
 import pow.cards.Card;
+import pow.cards.Minion;
 import pow.cards.Zone;
 
 import java.util.ArrayList;
@@ -63,7 +61,7 @@ public class Board {
             attackAction.getDefender().defend(attackAction.getAttacker(), this);
             return;
         }
-        if (action instanceof DamageAction && ((DamageAction) action).getDefender().getHealth() > 0) {
+        if (action instanceof DamageAction && !((DamageAction) action).getDefender().checkDeath()) {
             DamageAction damageAction = (DamageAction) action;
             for (List<Card> list : play)
                 for (Card card : list) {
@@ -84,7 +82,7 @@ public class Board {
                 }
             Card target = deathAction.getTarget();
             target.die(this);
-            moveCard(target.getZone(), target.getPlayer(), target.getZoneID(), Zone.GRAVEYARD, target.getPlayer());
+            moveCard(target.getZone(), target.getPlayer(), target, Zone.GRAVEYARD, target.getPlayer());
         }
         if (action instanceof PlayCardAction) {
             PlayCardAction playCardAction = (PlayCardAction) action;
@@ -94,73 +92,88 @@ public class Board {
                         ((PlayCardReactionInterface) card).playCardReaction(playCardAction, this);
                     }
                 }
-            Card target = playCardAction.getCard();
-            target.play(this);
-            moveCard(target.getZone(), target.getPlayer(), target.getZoneID(), Zone.PLAY, target.getPlayer());
+            playCardAction.getCard().play(this);
+        }
+        if (action instanceof SummonMinionAction) {
+            SummonMinionAction summonMinionAction = (SummonMinionAction) action;
+            for (List<Card> list : play)
+                for (Card card : list) {
+                    if (card instanceof SummonMinionReactionInterface) {
+                        ((SummonMinionReactionInterface) card).summonMinionReaction(summonMinionAction, this);
+                    }
+                }
+            summonMinionAction.getMinion().summon(summonMinionAction.getPlayer(), this);
         }
     }
 
     public void addCard(byte player, Zone zone, Card card) {
+        addCard(player, zone, card, -1);
+    }
+
+    public void addCard(byte player, Zone zone, Card card, int index) {
         switch (zone) {
             case PLAY:
-                play[player].add(card);
+                play[player].add(index = index < 0 ? play[player].size() : index, card);
                 card.setZoneID(play[player].size() - 1);
                 break;
             case GRAVEYARD:
-                graveyard[player].add(card);
+                graveyard[player].add(index = index < 0 ? graveyard[player].size() : index, card);
                 card.setZoneID(graveyard[player].size() - 1);
                 break;
             case HAND:
-                hand[player].add(card);
+                hand[player].add(index = index < 0 ? hand[player].size() : index, card);
                 card.setZoneID(hand[player].size() - 1);
                 break;
         }
         cards[player].add(card);
         card.setPlayer(player);
         card.setZone(zone);
+        System.out.printf("Card %s added to %s{player=%d, index=%d}\n", card.getName(), zone, player, index);
     }
 
-    public void moveCard(Zone from, byte fromPlayer, int fromId, Zone to, byte toPlayer) {
-        switch (to) {
+    public void removeCard(byte player, Zone zone, Card card) {
+        switch (zone) {
             case PLAY:
-                moveCard(from, fromPlayer, fromId, to, toPlayer, play[toPlayer].size());
+                play[player].remove(card);
                 break;
             case GRAVEYARD:
-                moveCard(from, fromPlayer, fromId, to, toPlayer, graveyard[toPlayer].size());
+                graveyard[player].remove(card);
                 break;
             case HAND:
-                moveCard(from, fromPlayer, fromId, to, toPlayer, hand[toPlayer].size());
+                hand[player].remove(card);
                 break;
         }
+        cards[player].remove(card);
+        System.out.printf("Card %s removed from %s{player=%d}\n", card.getName(), zone, player);
     }
 
-    public void moveCard(Zone from, byte fromPlayer, int fromId, Zone to, byte toPlayer, int toId) {
-        Card card = null;
+    public void moveCard(Zone from, byte fromPlayer, Card card, Zone to, byte toPlayer) {
+        moveCard(from, fromPlayer, card, to, toPlayer, -1);
+    }
+
+    public void moveCard(Zone from, byte fromPlayer, Card card, Zone to, byte toPlayer, int toIndex) {
         switch (from) {
             case PLAY:
-                card = play[fromPlayer].get(fromId);
-                play[fromPlayer].remove(fromId);
+                play[fromPlayer].remove(card);
                 break;
             case GRAVEYARD:
-                card = graveyard[fromPlayer].get(fromId);
-                graveyard[fromPlayer].remove(fromId);
+                graveyard[fromPlayer].remove(card);
                 break;
             case HAND:
-                card = hand[fromPlayer].get(fromId);
-                hand[fromPlayer].remove(fromId);
+                hand[fromPlayer].remove(card);
                 break;
         }
         switch (to) {
             case PLAY:
-                play[toPlayer].add(toId, card);
+                play[toPlayer].add(toIndex = toIndex < 0 ? play[toPlayer].size() : toIndex, card);
                 break;
             case GRAVEYARD:
-                graveyard[toPlayer].add(toId, card);
+                graveyard[toPlayer].add(toIndex = toIndex < 0 ? graveyard[toPlayer].size() : toIndex, card);
                 break;
             case HAND:
-                hand[toPlayer].add(toId, card);
+                hand[toPlayer].add(toIndex = toIndex < 0 ? hand[toPlayer].size() : toIndex, card);
                 break;
         }
-        System.out.printf("Card %s moved from %s{player=%d, id=%d} to %s{player=%d, id=%d}\n", card.getName(), from, fromPlayer, fromId, to, toPlayer, toId);
+        System.out.printf("Card %s moved from %s{player=%d} to %s{player=%d, index=%d}\n", card.getName(), from, fromPlayer, to, toPlayer, toIndex);
     }
 }
