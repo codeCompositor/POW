@@ -1,12 +1,10 @@
 package pow.basic;
 
-import pow.actions.Action;
-import pow.actions.AttackAction;
-import pow.actions.DamageAction;
-import pow.actions.DeathAction;
+import pow.actions.*;
 import pow.actions.reactions.AttackReactionInterface;
 import pow.actions.reactions.DamageReactionInterface;
 import pow.actions.reactions.DeathReactionInterface;
+import pow.actions.reactions.PlayCardReactionInterface;
 import pow.cards.Card;
 import pow.cards.Zone;
 
@@ -17,6 +15,7 @@ public class Board {
     private List<Card> cards[];
     private List<Card> play[];
     private List<Card> graveyard[];
+    private List<Card> hand[];
     private byte currentPlayer;
 
     public Board() {
@@ -29,6 +28,9 @@ public class Board {
         graveyard = new List[2];
         graveyard[0] = new ArrayList<Card>();
         graveyard[1] = new ArrayList<Card>();
+        hand = new List[2];
+        hand[0] = new ArrayList<Card>();
+        hand[1] = new ArrayList<Card>();
     }
 
     public void endTurn() {
@@ -51,7 +53,7 @@ public class Board {
         System.out.println(action.toString());
         if (action instanceof AttackAction) {
             AttackAction attackAction = (AttackAction) action;
-            for (List<Card> list : cards)
+            for (List<Card> list : play)
                 for (Card card : list) {
                     if (card instanceof AttackReactionInterface && !((AttackReactionInterface) card).attackReaction(attackAction, this)) {
                         return;
@@ -63,7 +65,7 @@ public class Board {
         }
         if (action instanceof DamageAction && ((DamageAction) action).getDefender().getHealth() > 0) {
             DamageAction damageAction = (DamageAction) action;
-            for (List<Card> list : cards)
+            for (List<Card> list : play)
                 for (Card card : list) {
                     if (card instanceof DamageReactionInterface) {
                         ((DamageReactionInterface) card).damageReaction(damageAction, this);
@@ -74,7 +76,7 @@ public class Board {
         }
         if (action instanceof DeathAction) {
             DeathAction deathAction = (DeathAction) action;
-            for (List<Card> list : cards)
+            for (List<Card> list : play)
                 for (Card card : list) {
                     if (card instanceof DeathReactionInterface) {
                         ((DeathReactionInterface) card).deathReaction(deathAction, this);
@@ -83,6 +85,18 @@ public class Board {
             Card target = deathAction.getTarget();
             target.die(this);
             moveCard(target.getZone(), target.getPlayer(), target.getZoneID(), Zone.GRAVEYARD, target.getPlayer());
+        }
+        if (action instanceof PlayCardAction) {
+            PlayCardAction playCardAction = (PlayCardAction) action;
+            for (List<Card> list : play)
+                for (Card card : list) {
+                    if (card instanceof PlayCardReactionInterface) {
+                        ((PlayCardReactionInterface) card).playCardReaction(playCardAction, this);
+                    }
+                }
+            Card target = playCardAction.getCard();
+            target.play(this);
+            moveCard(target.getZone(), target.getPlayer(), target.getZoneID(), Zone.PLAY, target.getPlayer());
         }
     }
 
@@ -95,6 +109,10 @@ public class Board {
             case GRAVEYARD:
                 graveyard[player].add(card);
                 card.setZoneID(graveyard[player].size() - 1);
+                break;
+            case HAND:
+                hand[player].add(card);
+                card.setZoneID(hand[player].size() - 1);
                 break;
         }
         cards[player].add(card);
@@ -110,6 +128,9 @@ public class Board {
             case GRAVEYARD:
                 moveCard(from, fromPlayer, fromId, to, toPlayer, graveyard[toPlayer].size());
                 break;
+            case HAND:
+                moveCard(from, fromPlayer, fromId, to, toPlayer, hand[toPlayer].size());
+                break;
         }
     }
 
@@ -124,6 +145,10 @@ public class Board {
                 card = graveyard[fromPlayer].get(fromId);
                 graveyard[fromPlayer].remove(fromId);
                 break;
+            case HAND:
+                card = hand[fromPlayer].get(fromId);
+                hand[fromPlayer].remove(fromId);
+                break;
         }
         switch (to) {
             case PLAY:
@@ -131,6 +156,9 @@ public class Board {
                 break;
             case GRAVEYARD:
                 graveyard[toPlayer].add(toId, card);
+                break;
+            case HAND:
+                hand[toPlayer].add(toId, card);
                 break;
         }
         System.out.printf("Card %s moved from %s{player=%d, id=%d} to %s{player=%d, id=%d}\n", card.getName(), from, fromPlayer, fromId, to, toPlayer, toId);

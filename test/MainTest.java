@@ -5,15 +5,16 @@ import pow.actions.DamageAction;
 import pow.actions.reactions.DamageReactionInterface;
 import pow.basic.Board;
 import pow.cards.Creature;
+import pow.cards.Minion;
 import pow.cards.Zone;
 
 public class MainTest {
     Board board;
-    Creature yeti;
-    Creature grizzly;
-    Creature damager;
+    Minion yeti;
+    Minion grizzly;
+    Minion damager;
 
-    private class Damager extends Creature implements DamageReactionInterface {
+    private class Damager extends Minion implements DamageReactionInterface {
 
         public Damager(String name, int cost, int attack, int health) {
             super(name, cost, attack, health);
@@ -32,8 +33,8 @@ public class MainTest {
     @Before
     public void setUp() {
         board = new Board();
-        yeti = new Creature("Yeti", 4, 4, 5);
-        grizzly = new Creature("Grizzly", 3, 3, 3);
+        yeti = new Minion("Yeti", 4, 4, 5);
+        grizzly = new Minion("Grizzly", 3, 3, 3);
         damager = new Damager("Damager", 1, 1, 1);
         board.addCard((byte) 0, Zone.PLAY, damager);
     }

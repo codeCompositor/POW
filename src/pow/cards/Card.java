@@ -64,4 +64,6 @@ public class Card implements Cloneable {
     }
 
     public void die(Board board) {}
+
+    public void play(Board board) {}
 }
