@@ -9,5 +9,5 @@ public interface SummonMinionReactionInterface {
      * @param board Game board on which action is taking place
      * @return <b>true</b> if action should be continued and <b>false</b> if action should be disrupted
      */
-    boolean summonMinionReaction(SummonMinionAction action, Board board);
+    boolean reaction(SummonMinionAction action, Board board);
 }

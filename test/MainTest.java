@@ -24,7 +24,7 @@ public class MainTest {
         }
 
         @Override
-        public boolean damageReaction(DamageAction action, Board board) {
+        public boolean reaction(DamageAction action, Board board) {
             if (action.getAttacker() instanceof Creature && !action.getAttacker().equals(this))
                 board.makeAction(new DamageAction(this, (Creature)action.getAttacker(), 1));
             return true;
@@ -42,12 +42,10 @@ public class MainTest {
     @Test
     public void test1() {
         System.out.printf("Test #1:\nAttacker: %s\nDefender: %s\n\n", yeti, grizzly);
-        board.addCard((byte) 0, Zone.HAND, damager);
         board.addCard((byte) 0, Zone.HAND, yeti);
         board.addCard((byte) 0, Zone.HAND, grizzly);
         board.makeAction(new PlayCardAction(yeti));
         board.makeAction(new PlayCardAction(grizzly));
-        board.makeAction(new PlayCardAction(damager));
         board.makeAction(new AttackAction(yeti, grizzly));
         System.out.printf("\nAttacker: %s\nDefender: %s\n\n\n", yeti, grizzly);
     }
@@ -55,12 +53,10 @@ public class MainTest {
     @Test
     public void test2() {
         System.out.printf("Test #2:\nAttacker: %s\nDefender: %s\n\n", grizzly, yeti);
-        board.addCard((byte) 0, Zone.HAND, damager);
         board.addCard((byte) 0, Zone.HAND, yeti);
         board.addCard((byte) 0, Zone.HAND, grizzly);
         board.makeAction(new PlayCardAction(yeti));
         board.makeAction(new PlayCardAction(grizzly));
-        board.makeAction(new PlayCardAction(damager));
         board.makeAction(new AttackAction(grizzly, yeti));
         System.out.printf("\nAttacker: %s\nDefender: %s\n", grizzly, yeti);
     }

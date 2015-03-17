@@ -9,5 +9,5 @@ public interface AttackReactionInterface {
      * @param board Game board on which action is taking place
      * @return <b>true</b> if action should be continued and <b>false</b> if action should be disrupted
      */
-    boolean attackReaction(AttackAction action, Board board);
+    boolean reaction(AttackAction action, Board board);
 }
